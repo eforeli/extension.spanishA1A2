@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Simple Toggle Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            line-height: 2;
+        }
+        span {
+            font-weight: bold;
+            padding: 2px;
+            cursor: pointer;
+        }
+        .controls {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: white;
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        button {
+            margin: 5px;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .toggle-btn {
+            background: #ff6b6b;
+            color: white;
+        }
+        .status-btn {
+            background: #4ecdc4;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <h3>Toggle Test</h3>
+        <button class="toggle-btn" onclick="testToggle()">Toggle Extension</button>
+        <button class="status-btn" onclick="testStatus()">Check Status</button>
+        <div id="status">Status: Enabled</div>
+    </div>
+
+    <h1>Simple Toggle Test</h1>
+    
+    <p>Hover over these words when extension is ENABLED (should highlight yellow):</p>
+    <p>El <span>protagonista</span> es muy <span>perspicaz</span> y <span>meticuloso</span>.</p>
+    <p>La <span>productora</span> anunció una <span>trilogía</span> muy <span>popular</span>.</p>
+    
+    <p>Click on words to test click events.</p>
+    
+    <p><strong>Test steps:</strong></p>
+    <ol>
+        <li>Move mouse over bold words → should highlight yellow</li>
+        <li>Click "Toggle Extension" → extension disabled</li>
+        <li>Move mouse over bold words → should NOT highlight</li>
+        <li>Check browser console (F12) for debug messages</li>
+    </ol>
+
+    <script src="test_simple.js"></script>
+    <script>
+        function updateStatusDisplay() {
+            const statusDiv = document.getElementById('status');
+            const isEnabled = window.testInstance ? window.testInstance.extensionEnabled : false;
+            statusDiv.textContent = `Status: ${isEnabled ? 'Enabled' : 'Disabled'}`;
+            statusDiv.style.color = isEnabled ? 'green' : 'red';
+        }
+
+        // 重寫 testToggle 來更新顯示
+        window.testToggle = () => {
+            if (window.testInstance) {
+                window.testInstance.toggle();
+                updateStatusDisplay();
+            }
+        };
+
+        // 重寫 testStatus 來更新顯示
+        window.testStatus = () => {
+            if (window.testInstance) {
+                const status = window.testInstance.extensionEnabled;
+                console.log('Extension enabled:', status);
+                updateStatusDisplay();
+                return status;
+            }
+        };
+
+        // 初始化顯示
+        setTimeout(updateStatusDisplay, 100);
+    </script>
+</body>
+</html>

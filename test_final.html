@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Test - Spanish Dictionary Extension</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            line-height: 1.8;
+            background: #f9f9f9;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .status-panel {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: white;
+            border: 2px solid #ccc;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 12px;
+            max-width: 300px;
+            z-index: 9999;
+        }
+        .word-test {
+            font-size: 18px;
+            margin: 10px 0;
+            padding: 5px;
+        }
+        .success {
+            color: #2e8b57;
+        }
+        .error {
+            color: #dc143c;
+        }
+        .info {
+            color: #4682b4;
+        }
+    </style>
+</head>
+<body>
+    <div class="status-panel">
+        <h3>🔍 Extension Status</h3>
+        <div id="status">Loading...</div>
+        <button onclick="checkStatus()" style="margin-top: 10px; padding: 5px 10px;">Check Status</button>
+    </div>
+
+    <h1>🧪 Final Test - Spanish Dictionary Extension</h1>
+    
+    <div class="test-section">
+        <h2>Test Cases:</h2>
+        
+        <div class="word-test">
+            <strong>Single Word Test:</strong>
+            <span>incomprensible</span>
+        </div>
+        
+        <div class="word-test">
+            <strong>Short Phrase Test:</strong>
+            <span>muy perspicaz</span>
+        </div>
+        
+        <div class="word-test">
+            <strong>Long Paragraph Test:</strong>
+            <p>Jennifer Lawrence arrastra cuerpo y alma como que se muda a una casa familiar junto a su pareja interpretada por Robert Pattinson para parir y criar a su primer hijo mientras trabaja en una novela. Pronto la efervescencia sexual y emocional que disfrutaban se ensombrece con la caída en un pozo de tristeza y furia incomprensible para ella misma y su entorno.</p>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Expected Behavior:</h2>
+        <ol>
+            <li><span class="info">Single Word</span>: Should highlight entire word when hovering</li>
+            <li><span class="info">Short Phrase</span>: Should highlight only the complex word (perspicaz)</li>
+            <li><span class="info">Long Paragraph</span>: Should highlight only individual words, not entire paragraph</li>
+            <li><span class="success">Click</span>: Should show OpenAI-generated explanation, not generic message</li>
+        </ol>
+    </div>
+
+    <div class="test-section">
+        <h2>Debug Commands:</h2>
+        <ul>
+            <li><code>checkSpanishDictionary()</code> - Check extension status</li>
+            <li><code>window.spanishDictionaryNewInstance</code> - Access extension instance</li>
+        </ul>
+    </div>
+
+    <script>
+        function checkStatus() {
+            const statusDiv = document.getElementById('status');
+            
+            try {
+                if (typeof checkSpanishDictionary === 'function') {
+                    const instance = checkSpanishDictionary();
+                    statusDiv.innerHTML = `
+                        <div class="success">✅ Extension Loaded</div>
+                        <div>Instance: ${instance.instanceId}</div>
+                        <div>Enabled: ${instance.extensionEnabled ? '✅' : '❌'}</div>
+                        <div>API Key: ${instance.openaiApiKey ? '✅' : '❌'}</div>
+                        <div>Model: ${instance.selectedModel}</div>
+                    `;
+                } else if (window.spanishDictionaryNewInstance) {
+                    const instance = window.spanishDictionaryNewInstance;
+                    statusDiv.innerHTML = `
+                        <div class="success">✅ Extension Found</div>
+                        <div>Instance: ${instance.instanceId}</div>
+                        <div>Enabled: ${instance.extensionEnabled ? '✅' : '❌'}</div>
+                        <div>API Key: ${instance.openaiApiKey ? '✅' : '❌'}</div>
+                        <div>Model: ${instance.selectedModel}</div>
+                    `;
+                } else {
+                    statusDiv.innerHTML = '<div class="error">❌ Extension Not Found</div>';
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+            }
+        }
+
+        // 自動檢查狀態
+        setTimeout(checkStatus, 1000);
+        setInterval(checkStatus, 5000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Precision - Spanish Dictionary</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            line-height: 1.8;
+            background: #f9f9f9;
+        }
+        .test-case {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .debug-panel {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: white;
+            border: 2px solid #ccc;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 12px;
+            max-width: 300px;
+            z-index: 9999;
+        }
+        .mixed-text {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="debug-panel">
+        <h3>🎯 Precision Test</h3>
+        <div id="debug-info">Hover over words...</div>
+        <div id="mouse-position"></div>
+    </div>
+
+    <h1>🎯 Precision Test - Spanish Dictionary</h1>
+    
+    <div class="test-case">
+        <h2>Test Case: Problematic Paragraph (Like in Screenshot)</h2>
+        <p class="mixed-text">
+            Con 35 años, Lawrence se convierte en el Premio Donostia más joven desde que el 
+            certamen creó su premio honorífico en 1986. La intérprete es una de las grandes 
+            estrellas de su generación desde que en 2012 ganó el Oscar por su papel en El lado 
+            bueno de las cosas. Protagonista de la trilogía juvenil Los juegos del hambre, Lawrence 
+            ha liderado varios años el ránking de actriz mejor pagada del mundo por sus 
+            apariciones en éxitos de la saga X-Men, que ha compaginado con proyectos como La 
+            gran estafa americana, No mires arriba o Joy.
+        </p>
+    </div>
+
+    <div class="test-case">
+        <h2>Test Case: Mixed Complex and Simple Words</h2>
+        <p class="mixed-text">
+            La actriz <strong>estadounidense</strong> proyectará en el certamen 
+            <em>Die My Love</em>, de Lynne Ramsay del que Lawrence también es productora. 
+            El nuevo <span>Premio Donostia</span> se suma al ya anunciado para la productora.
+        </p>
+    </div>
+
+    <div class="test-case">
+        <h2>Expected Behavior:</h2>
+        <ul>
+            <li><strong>✅ Should trigger:</strong> estadounidense, productora, certamen, intérprete, protagonista, trilogía, apariciones</li>
+            <li><strong>❌ Should NOT trigger:</strong> "La", "el", "de", "se", "en", "por", "con", "años"</li>
+            <li><strong>❌ Should NOT trigger incomplete words:</strong> "sebasti" (from Sebastián)</li>
+            <li><strong>🎯 Critical:</strong> Should NEVER highlight entire paragraphs</li>
+            <li><strong>🎯 Critical:</strong> Highlight position must match mouse click exactly</li>
+        </ul>
+    </div>
+
+    <div class="test-case">
+        <h2>Instructions:</h2>
+        <ol>
+            <li><strong>Click</strong> on individual words in the paragraph above (no more hover)</li>
+            <li>The debug panel shows which element/text is under your mouse</li>
+            <li>Complex Spanish words should show tooltip, simple words should not</li>
+            <li>Check console (F12) for detailed detection logs</li>
+            <li><strong>Critical test:</strong> The entire paragraph should NEVER get highlighted</li>
+        </ol>
+    </div>
+
+    <script>
+        let lastMouseX = 0;
+        let lastMouseY = 0;
+
+        document.addEventListener('mousemove', function(e) {
+            lastMouseX = e.clientX;
+            lastMouseY = e.clientY;
+            
+            const mousePos = document.getElementById('mouse-position');
+            if (mousePos) {
+                mousePos.innerHTML = `Mouse: ${e.clientX}, ${e.clientY}`;
+            }
+            
+            // Try to get the element and text at mouse position
+            const element = document.elementFromPoint(e.clientX, e.clientY);
+            if (element && element.textContent) {
+                updateDebugInfo(element, e);
+            }
+        });
+
+        function updateDebugInfo(element, event) {
+            const debugDiv = document.getElementById('debug-info');
+            const text = element.textContent.trim();
+            
+            if (text.length > 50) {
+                debugDiv.innerHTML = `
+                    <div>Element: ${element.tagName}</div>
+                    <div>Text: "${text.substring(0, 30)}..."</div>
+                    <div>Length: ${text.length} chars</div>
+                `;
+            } else {
+                debugDiv.innerHTML = `
+                    <div>Element: ${element.tagName}</div>
+                    <div>Text: "${text}"</div>
+                    <div>Length: ${text.length} chars</div>
+                `;
+            }
+            
+            // Test caret range if available
+            try {
+                if (document.caretRangeFromPoint) {
+                    const range = document.caretRangeFromPoint(event.clientX, event.clientY);
+                    if (range && range.startContainer && range.startContainer.nodeType === Node.TEXT_NODE) {
+                        const textNode = range.startContainer;
+                        const offset = range.startOffset;
+                        debugDiv.innerHTML += `<div>Caret: offset ${offset} in "${textNode.textContent}"</div>`;
+                    }
+                }
+            } catch (error) {
+                debugDiv.innerHTML += `<div>Caret: Not available</div>`;
+            }
+        }
+
+        // Check extension status
+        setTimeout(() => {
+            if (window.spanishDictionaryNewInstance) {
+                console.log('✅ Extension loaded successfully');
+                const instance = window.spanishDictionaryNewInstance;
+                console.log('Instance info:', {
+                    id: instance.instanceId,
+                    enabled: instance.extensionEnabled,
+                    hasApiKey: !!instance.openaiApiKey
+                });
+            } else {
+                console.log('❌ Extension not found. Make sure to reload extension and refresh page.');
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

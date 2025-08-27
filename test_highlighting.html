@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Highlighting - Spanish Dictionary</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            line-height: 1.8;
+            background: #f9f9f9;
+        }
+        .test-case {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .debug-panel {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: white;
+            border: 2px solid #ccc;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 12px;
+            max-width: 300px;
+            z-index: 9999;
+        }
+        .word {
+            padding: 5px;
+            margin: 5px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="debug-panel">
+        <h3>🔍 Extension Debug</h3>
+        <button onclick="checkExtension()" style="padding: 5px 10px;">Check Extension</button>
+        <div id="debug-info">Click to check...</div>
+    </div>
+
+    <h1>🧪 Test Highlighting - Spanish Dictionary</h1>
+    
+    <div class="test-case">
+        <h2>Test Case 1: Single Words</h2>
+        <p>Each word should highlight individually:</p>
+        <div>
+            <span class="word">incomprensible</span>
+            <span class="word">perspicaz</span>
+            <span class="word">extraordinario</span>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <h2>Test Case 2: Short Phrases (≤3 words)</h2>
+        <p>These should highlight as complete elements:</p>
+        <div>
+            <span class="word">muy perspicaz</span>
+        </div>
+        <div>
+            <span class="word">bastante difícil</span>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <h2>Test Case 3: Mixed Content</h2>
+        <p>Some words in this paragraph should highlight: La palabra <strong>incomprensible</strong> es difícil, pero <em>perspicaz</em> también es compleja.</p>
+    </div>
+
+    <div class="test-case">
+        <h2>Test Case 4: Basic Words (Should NOT highlight)</h2>
+        <div>
+            <span class="word">casa</span>
+            <span class="word">día</span>
+            <span class="word">vida</span>
+            <span class="word">muy</span>
+        </div>
+    </div>
+
+    <script>
+        function checkExtension() {
+            const debugDiv = document.getElementById('debug-info');
+            
+            if (window.spanishDictionaryNewInstance) {
+                const instance = window.spanishDictionaryNewInstance;
+                debugDiv.innerHTML = `
+                    <div style="color: green;">✅ Extension Loaded</div>
+                    <div>ID: ${instance.instanceId}</div>
+                    <div>Enabled: ${instance.extensionEnabled ? '✅' : '❌'}</div>
+                    <div>API Key: ${instance.openaiApiKey ? '✅' : '❌'}</div>
+                    <div>Model: ${instance.selectedModel}</div>
+                `;
+            } else if (window.checkSpanishDictionary) {
+                try {
+                    const result = window.checkSpanishDictionary();
+                    debugDiv.innerHTML = `
+                        <div style="color: orange;">⚠️ Old version detected</div>
+                        <div>Please reload extension</div>
+                    `;
+                } catch (error) {
+                    debugDiv.innerHTML = `<div style="color: red;">❌ Error: ${error.message}</div>`;
+                }
+            } else {
+                debugDiv.innerHTML = `
+                    <div style="color: red;">❌ Extension Not Found</div>
+                    <div>Steps to fix:</div>
+                    <div>1. Reload extension in chrome://extensions/</div>
+                    <div>2. Refresh this page</div>
+                `;
+            }
+        }
+
+        // Auto-check every 2 seconds
+        setInterval(checkExtension, 2000);
+        
+        // Test complex word detection
+        setTimeout(() => {
+            if (window.spanishDictionaryNewInstance) {
+                const instance = window.spanishDictionaryNewInstance;
+                console.log('Testing word detection:');
+                console.log('incomprensible:', instance.isComplexWord('incomprensible'));
+                console.log('perspicaz:', instance.isComplexWord('perspicaz'));
+                console.log('casa:', instance.isComplexWord('casa'));
+                console.log('muy:', instance.isComplexWord('muy'));
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

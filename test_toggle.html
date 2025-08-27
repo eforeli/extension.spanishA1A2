@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Extension Toggle</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            line-height: 1.6;
+        }
+        .test-section {
+            background: #f5f5f5;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        .debug-panel {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: white;
+            border: 2px solid #ccc;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 12px;
+            max-width: 300px;
+            z-index: 9999;
+        }
+        .status {
+            margin: 5px 0;
+            padding: 5px;
+            border-radius: 4px;
+        }
+        .status.enabled {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status.disabled {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        button {
+            margin: 5px;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .test-btn {
+            background: #007bff;
+            color: white;
+        }
+        .test-btn:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="debug-panel">
+        <h3>🔧 Debug Panel</h3>
+        <div id="extensionStatus" class="status">Loading...</div>
+        <div id="instanceInfo">Instance: Unknown</div>
+        <div id="mouseEvents">Mouse events: 0</div>
+        <div id="clickEvents">Click events: 0</div>
+        <br>
+        <button class="test-btn" onclick="testToggle()">Test Toggle</button>
+        <button class="test-btn" onclick="checkStatus()">Check Status</button>
+        <button class="test-btn" onclick="simulatePopupToggle()">Simulate Popup Toggle</button>
+    </div>
+
+    <h1>🧪 Extension Toggle Test Page</h1>
+    
+    <div class="test-section">
+        <h2>Test Words (should only work when extension is enabled):</h2>
+        <p>Hover over these words and click them:</p>
+        <p>El <span style="font-weight: bold;">protagonista</span> de la película es muy <span style="font-weight: bold;">perspicaz</span> y <span style="font-weight: bold;">meticuloso</span>.</p>
+        <p>La <span style="font-weight: bold;">productora</span> anunció que la <span style="font-weight: bold;">trilogía</span> será muy <span style="font-weight: bold;">popular</span>.</p>
+    </div>
+
+    <div class="test-section">
+        <h2>Instructions:</h2>
+        <ol>
+            <li><strong>Enable Extension</strong>: Open extension popup → Click ▶️ button</li>
+            <li><strong>Test Enabled State</strong>: Move mouse over bold words → Should see yellow highlights</li>
+            <li><strong>Disable Extension</strong>: Open extension popup → Click ⏸️ button</li>
+            <li><strong>Test Disabled State</strong>: Move mouse over bold words → Should NOT see highlights</li>
+            <li><strong>Check Console</strong>: Open F12 → Console → Look for debug messages</li>
+        </ol>
+    </div>
+
+    <div class="test-section">
+        <h2>Console Commands:</h2>
+        <ul>
+            <li><code>checkSpanishDictionary()</code> - Show current status</li>
+            <li><code>window.spanishDictionaryInstance.extensionEnabled</code> - Check enabled state</li>
+            <li><code>testToggleFunction()</code> - Manual toggle test</li>
+        </ul>
+    </div>
+
+    <script src="content.js"></script>
+    <script>
+        let mouseEventCount = 0;
+        let clickEventCount = 0;
+
+        // 監控滑鼠事件
+        document.addEventListener('mousemove', () => {
+            mouseEventCount++;
+            document.getElementById('mouseEvents').textContent = `Mouse events: ${mouseEventCount}`;
+        });
+
+        document.addEventListener('click', () => {
+            clickEventCount++;
+            document.getElementById('clickEvents').textContent = `Click events: ${clickEventCount}`;
+        });
+
+        function updateDebugPanel() {
+            const instance = window.spanishDictionaryInstance;
+            if (instance) {
+                const statusEl = document.getElementById('extensionStatus');
+                const instanceEl = document.getElementById('instanceInfo');
+                
+                if (instance.extensionEnabled) {
+                    statusEl.className = 'status enabled';
+                    statusEl.textContent = '✅ Extension ENABLED';
+                } else {
+                    statusEl.className = 'status disabled';
+                    statusEl.textContent = '❌ Extension DISABLED';
+                }
+                
+                instanceEl.textContent = `Instance: ${instance.instanceId}`;
+            }
+        }
+
+        function testToggle() {
+            const instance = window.spanishDictionaryInstance;
+            if (instance) {
+                instance.extensionEnabled = !instance.extensionEnabled;
+                console.log(`Manual toggle: ${instance.extensionEnabled}`);
+                updateDebugPanel();
+            }
+        }
+
+        function checkStatus() {
+            if (typeof checkSpanishDictionary === 'function') {
+                checkSpanishDictionary();
+            } else {
+                console.log('checkSpanishDictionary function not available');
+            }
+            updateDebugPanel();
+        }
+
+        function simulatePopupToggle() {
+            // 模擬 popup 發送的訊息
+            const instance = window.spanishDictionaryInstance;
+            if (instance) {
+                const newState = !instance.extensionEnabled;
+                
+                // 模擬 chrome.runtime.onMessage
+                const message = {
+                    action: 'extensionToggled',
+                    enabled: newState
+                };
+                
+                console.log('Simulating popup message:', message);
+                
+                // 手動觸發訊息處理
+                instance.extensionEnabled = newState;
+                if (!newState) {
+                    instance.hideTooltip();
+                    instance.removeHighlight();
+                }
+                
+                updateDebugPanel();
+            }
+        }
+
+        // 測試函數
+        window.testToggleFunction = () => {
+            console.log('=== Toggle Function Test ===');
+            const instance = window.spanishDictionaryInstance;
+            if (instance) {
+                console.log(`Before: ${instance.extensionEnabled}`);
+                instance.extensionEnabled = !instance.extensionEnabled;
+                console.log(`After: ${instance.extensionEnabled}`);
+                updateDebugPanel();
+            }
+        };
+
+        // 定期更新 debug panel
+        setInterval(updateDebugPanel, 1000);
+        
+        // 初始化
+        setTimeout(() => {
+            updateDebugPanel();
+            console.log('Test page loaded. Use the debug panel or console commands to test.');
+        }, 1000);
+    </script>
+</body>
+</html>

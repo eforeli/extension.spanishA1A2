@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Spanish Dictionary Extension</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+        .test-section {
+            background: #f5f5f5;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Page for Spanish Dictionary Extension</h1>
+    
+    <div class="test-section">
+        <h2>Test Words (should highlight and show tooltips when clicked):</h2>
+        
+        <p>Las <span>medidas</span> de <span>fuerza</span> del <span>gremio</span> para este domingo llevaron a la <span>cancelación</span> de vuelos.</p>
+        
+        <p>Desde el inicio del paro, <span>Aerolíneas</span> <span>Argentinas</span> se vio obligada a reprogramar varios vuelos.</p>
+        
+        <p>Por <span>Ludmila</span> Di Grande, una persona muy <span>perspicaz</span> y <span>meticulosa</span>.</p>
+    </div>
+
+    <div class="test-section">
+        <h2>Basic Words (should NOT highlight):</h2>
+        <p>El día de hoy es muy bueno para trabajar en casa con agua y comida.</p>
+    </div>
+
+    <div class="test-section">
+        <h2>Mixed Content:</h2>
+        <p>La <span>nostalgia</span> es un sentimiento muy común. Una persona <span>resiliente</span> puede superarla fácilmente.</p>
+    </div>
+
+    <div class="test-section">
+        <h2>Test Instructions:</h2>
+        <ol>
+            <li>Load the Chrome extension</li>
+            <li>Open browser dev tools (F12) and check Console</li>
+            <li>Should see "Spanish Dictionary initialized" message</li>
+            <li>Move mouse over words in spans above - they should highlight yellow</li>
+            <li>Click on highlighted words - should show tooltip with explanation</li>
+            <li>Try copying with the 📋 button</li>
+        </ol>
+    </div>
+
+    <script>
+        // Simple test script to verify the extension loaded
+        setTimeout(() => {
+            const tooltip = document.getElementById('spanish-tooltip');
+            if (tooltip) {
+                console.log('✅ Spanish Dictionary Extension detected!');
+            } else {
+                console.log('❌ Spanish Dictionary Extension NOT detected!');
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

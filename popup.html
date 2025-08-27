@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      width: 300px;
+      padding: 20px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    .header p {
+      margin: 5px 0 0 0;
+      font-size: 12px;
+      opacity: 0.8;
+    }
+
+    .content {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 15px;
+      backdrop-filter: blur(10px);
+    }
+
+    .info-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+
+    .info-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .info-item .icon {
+      margin-right: 8px;
+      font-size: 16px;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 2px 8px;
+      background: rgba(76, 175, 80, 0.8);
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .instructions {
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      font-size: 12px;
+      line-height: 1.4;
+      opacity: 0.9;
+    }
+
+    .version {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 11px;
+      opacity: 0.6;
+    }
+
+    .api-config {
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .api-input {
+      width: 100%;
+      padding: 8px;
+      border: none;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.9);
+      color: #333;
+      font-size: 12px;
+      margin: 8px 0;
+      box-sizing: border-box;
+    }
+
+    .api-button {
+      width: 100%;
+      padding: 8px;
+      border: none;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .api-button:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .api-status {
+      margin-top: 8px;
+      font-size: 11px;
+      text-align: center;
+    }
+
+    .api-status.success {
+      color: #4CAF50;
+    }
+
+    .api-status.error {
+      color: #f44336;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>📚 Diccionario Español</h1>
+    <p>Simplificador A1-A2</p>
+  </div>
+
+  <div class="content">
+    <div class="info-item">
+      <span class="icon">🔄</span>
+      <span>Estado: <span id="extensionStatus" class="status">Cargando...</span></span>
+      <button id="toggleButton" class="api-button" style="margin-left: 10px; width: auto; padding: 4px 8px;">🔄</button>
+    </div>
+
+    <div class="info-item">
+      <span class="icon">🎯</span>
+      <span>Nivel objetivo: A1-A2</span>
+    </div>
+
+    <div class="info-item">
+      <span class="icon">📋</span>
+      <span>Copiar con un clic</span>
+    </div>
+
+    <div class="instructions">
+      <strong>Cómo usar:</strong><br>
+      1. Configura tu API Key de OpenAI abajo<br>
+      2. Navega a cualquier página web en español<br>
+      3. Pasa el ratón sobre palabras complejas<br>
+      4. Lee la explicación simplificada A1-A2<br>
+      5. Haz clic en 📋 para copiar
+    </div>
+
+    <div class="api-config">
+      <strong>🤖 Configuración OpenAI:</strong>
+      <input type="password" id="apiKey" class="api-input" placeholder="Ingresa tu OpenAI API Key">
+      
+      <label for="modelSelect" style="font-size: 12px; display: block; margin-top: 10px; margin-bottom: 4px;">Modelo:</label>
+      <select id="modelSelect" class="api-input">
+        <option value="gpt-4o-mini">GPT-4o Mini (MÁS BARATO + mejor calidad) ⭐</option>
+        <option value="gpt-3.5-turbo">GPT-3.5 Turbo (Más caro que Mini)</option>
+        <option value="gpt-4o">GPT-4o (Máxima calidad, caro)</option>
+        <option value="gpt-4">GPT-4 (Clásico, muy caro)</option>
+      </select>
+      
+      <div style="font-size: 10px; margin: 4px 0; opacity: 0.8;" id="modelInfo">
+        GPT-3.5 Turbo: ~$0.001/1000 tokens
+      </div>
+      
+      <button id="saveKey" class="api-button">💾 Guardar Configuración</button>
+      <button id="testKey" class="api-button">🧪 Probar API</button>
+      <div id="apiStatus" class="api-status"></div>
+    </div>
+
+    <div class="version">
+      Versión 2.0 - Powered by OpenAI
+    </div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

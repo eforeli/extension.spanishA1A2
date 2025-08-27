@@ -1,0 +1,213 @@
+#spanish-tooltip {
+  position: fixed;
+  z-index: 10000;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 12px;
+  padding: 0;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  max-width: 320px;
+  min-width: 200px;
+  pointer-events: auto;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+#spanish-tooltip[style*="block"] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#spanish-tooltip .tooltip-content {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 10px;
+  padding: 16px;
+  margin: 2px;
+  position: relative;
+}
+
+#spanish-tooltip .word-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #2c3e50;
+  margin-bottom: 8px;
+  text-transform: capitalize;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 4px;
+  display: inline-block;
+}
+
+#spanish-tooltip .explanation {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #34495e;
+  margin-bottom: 12px;
+  text-align: left;
+  hyphens: auto;
+  word-wrap: break-word;
+}
+
+#spanish-tooltip .copy-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+}
+
+#spanish-tooltip .copy-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+  background: linear-gradient(135deg, #2980b9, #1f5f8b);
+}
+
+#spanish-tooltip .copy-btn:active {
+  transform: scale(0.95);
+}
+
+/* 添加小三角形指示器 */
+#spanish-tooltip::before {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid rgba(255, 255, 255, 0.95);
+}
+
+#spanish-tooltip::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid #667eea;
+}
+
+/* 响应式设计 */
+@media (max-width: 480px) {
+  #spanish-tooltip {
+    max-width: 280px;
+    min-width: 180px;
+  }
+  
+  #spanish-tooltip .word-title {
+    font-size: 16px;
+  }
+  
+  #spanish-tooltip .explanation {
+    font-size: 13px;
+  }
+  
+  #spanish-tooltip .copy-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+}
+
+/* 深色模式支持 */
+@media (prefers-color-scheme: dark) {
+  #spanish-tooltip .tooltip-content {
+    background: rgba(45, 45, 45, 0.95);
+    color: #e0e0e0;
+  }
+  
+  #spanish-tooltip .word-title {
+    color: #64b5f6;
+    border-bottom-color: #64b5f6;
+  }
+  
+  #spanish-tooltip .explanation {
+    color: #b0b0b0;
+  }
+}
+
+/* 动画效果 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+  }
+  50% {
+    box-shadow: 0 4px 20px rgba(52, 152, 219, 0.6);
+  }
+  100% {
+    box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+  }
+}
+
+#spanish-tooltip.show {
+  animation: fadeInUp 0.3s ease;
+}
+
+#spanish-tooltip .copy-btn.copying {
+  animation: pulse 0.5s ease;
+}
+
+/* 确保tooltip不会影响页面布局 */
+#spanish-tooltip {
+  pointer-events: auto;
+}
+
+#spanish-tooltip * {
+  box-sizing: border-box;
+}
+
+/* 处理文字选中 */
+#spanish-tooltip .tooltip-content {
+  user-select: text;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+}
+
+/* 滚动条样式 */
+#spanish-tooltip .explanation::-webkit-scrollbar {
+  width: 4px;
+}
+
+#spanish-tooltip .explanation::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#spanish-tooltip .explanation::-webkit-scrollbar-thumb {
+  background: rgba(52, 152, 219, 0.5);
+  border-radius: 2px;
+}
+
+#spanish-tooltip .explanation::-webkit-scrollbar-thumb:hover {
+  background: rgba(52, 152, 219, 0.7);
+}
